@@ -1,9 +1,11 @@
 package com.github.lisandrofernandez.hexagonal.common.util;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.function.Supplier;
 
-public final class Assert {
-    private Assert() {}
+@UtilityClass
+public class Assert {
 
     public static void isTrue(boolean expression, String message) {
         if (!expression) {

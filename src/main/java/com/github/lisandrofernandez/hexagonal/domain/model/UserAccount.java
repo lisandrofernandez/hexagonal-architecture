@@ -1,18 +1,18 @@
 package com.github.lisandrofernandez.hexagonal.domain.model;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 import org.apache.commons.lang3.CharUtils;
 
 import java.util.UUID;
 
 import static com.github.lisandrofernandez.hexagonal.domain.DomainException.Assert;
 
-@Getter
-public final class UserAccount {
-    private final UUID id;
-    private final String username;
-    private final String name;
+@Value
+public class UserAccount {
+    UUID id;
+    String username;
+    String name;
 
     @Builder(toBuilder = true)
     UserAccount(UUID id, String username, String name) {
@@ -27,7 +27,8 @@ public final class UserAccount {
         int length = username.length();
         Assert.isTrue(length >= 3, "username must have at least 3 characters");
         Assert.isTrue(length <= 50, "username must not exceed 50 characters");
-        for (int i = 0; i < length; i++) {
+        Assert.isTrue(CharUtils.isAsciiAlpha(username.charAt(0)), "username must start with a letter");
+        for (int i = 1; i < length; i++) {
             char ch = username.charAt(i);
             Assert.isTrue(
                     CharUtils.isAsciiAlphanumeric(ch) || ch == '.' || ch == '-' || ch == '_',

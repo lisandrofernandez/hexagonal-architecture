@@ -15,4 +15,6 @@ public interface UserAccountRepository {
     Optional<UserAccount> findByUsername(String username);
 
     boolean existsByUsername(String username);
+
+    Optional<UserAccount> deleteByUsernameAndReturnDeleted(String username);
 }

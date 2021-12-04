@@ -1,10 +1,12 @@
 package com.github.lisandrofernandez.hexagonal.common.util;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public final class Objects {
-    private Objects() {}
+@UtilityClass
+public class Objects {
 
     public static <T, R> R ifNotNullThenElse(T object, R thenn, R elsee) {
         return object != null ? thenn : elsee;

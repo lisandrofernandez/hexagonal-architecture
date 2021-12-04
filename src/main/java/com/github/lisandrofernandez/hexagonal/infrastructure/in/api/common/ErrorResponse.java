@@ -2,6 +2,7 @@ package com.github.lisandrofernandez.hexagonal.infrastructure.in.api.common;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.lisandrofernandez.hexagonal.common.util.Assert;
+import com.github.lisandrofernandez.hexagonal.common.util.CollectionUtils;
 import com.github.lisandrofernandez.hexagonal.common.util.jackson.HttpStatusToValueJsonSerializer;
 import com.github.lisandrofernandez.hexagonal.common.util.jackson.LocalDateTimeToEpochMilliJsonSerializer;
 import lombok.Getter;
@@ -59,8 +60,7 @@ public final class ErrorResponse {
             this.httpStatus = httpStatus;
             this.code = code;
             this.message = message;
-            this.messages = messages != null ? List.copyOf(messages) : null;
-            //this.messages = ifNotNullThenElseNull(messages, List::copyOf);
+            this.messages = CollectionUtils.copyToImmutableListOrNull(messages);
         }
 
         Error(Builder builder) {

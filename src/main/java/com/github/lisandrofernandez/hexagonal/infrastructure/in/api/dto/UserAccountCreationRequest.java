@@ -1,9 +1,8 @@
 package com.github.lisandrofernandez.hexagonal.infrastructure.in.api.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter @Setter
+@Data
 public class UserAccountCreationRequest {
     private String username;
     private String name;

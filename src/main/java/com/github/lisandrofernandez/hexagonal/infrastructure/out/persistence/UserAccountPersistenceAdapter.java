@@ -8,6 +8,7 @@ import com.github.lisandrofernandez.hexagonal.infrastructure.out.persistence.jpa
 import com.github.lisandrofernandez.hexagonal.infrastructure.out.persistence.mapper.UserAccountJpaEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class UserAccountPersistenceAdapter implements UserAccountRepository {
 
     @Override
     public UserAccount create(UserAccount userAccount) {
-        Assert.notNull(userAccount, "UserAccount must not be null");
+        Assert.notNull(userAccount, "userAccount must not be null");
 
         UserAccountJpaEntity userAccountJpaEntity = userAccountJpaRepository.save(
                 userAccountJpaEntityMapper.toEntity(userAccount)
@@ -50,5 +51,17 @@ public class UserAccountPersistenceAdapter implements UserAccountRepository {
         Assert.notNull(username, "username must not be null");
 
         return userAccountJpaRepository.existsByLowercasedUsername(username.toLowerCase(Locale.ROOT));
+    }
+
+    @Override
+    @Transactional
+    public Optional<UserAccount> deleteByUsernameAndReturnDeleted(String username) {
+        Assert.notNull(username, "username must not be null");
+
+        return userAccountJpaRepository.findByLowercasedUsername(username.toLowerCase(Locale.ROOT))
+                .map(userAccountJpaEntity -> {
+                    userAccountJpaRepository.delete(userAccountJpaEntity);
+                    return userAccountJpaEntityMapper.toDomain(userAccountJpaEntity);
+                });
     }
 }
