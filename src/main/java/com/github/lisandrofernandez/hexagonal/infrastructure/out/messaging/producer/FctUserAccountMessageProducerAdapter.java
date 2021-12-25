@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FctUserAccountMessageProducerAdapter implements FctUserAccountMessageProducer {
     private static final String BINDING_NAME = "fctUserAccountProducer-out-0";
+    private static final String HEADER_EVENT_TYPE = "event-type";
+    private static final String HEADER_PARTITION_KEY = "partition-key";
 
     private final UserAccountPayloadMapper userAccountPayloadMapper;
     private final StreamBridge streamBridge;
@@ -31,8 +33,8 @@ public class FctUserAccountMessageProducerAdapter implements FctUserAccountMessa
         UserAccountPayload userAccountPayload = userAccountPayloadMapper.toPayload(userAccount);
         return MessageBuilder
                 .withPayload(userAccountPayload)
-                .setHeader("partition-key", userAccount.getId().toString())
-                .setHeader("event-type", sendUserAccountMessageCommand.getEventType().name())
+                .setHeader(HEADER_PARTITION_KEY, userAccount.getId().toString())
+                .setHeader(HEADER_EVENT_TYPE, sendUserAccountMessageCommand.getEventType().name())
                 .build();
     }
 
