@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.function.Consumer;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class CmdUserAccount {
     private static final String HEADER_EVENT_TYPE = "event-type";
     private static final String EVENT_TYPE_DELETE = "DELETE";
