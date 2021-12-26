@@ -1,4 +1,4 @@
-CREATE TABLE user_account (
+CREATE TABLE IF NOT EXISTS user_account (
     id                  UUID DEFAULT random_uuid() PRIMARY KEY,
     username            VARCHAR(50) NOT NULL,
     lowercased_username VARCHAR(50) NOT NULL,
