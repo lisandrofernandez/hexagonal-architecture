@@ -1,5 +1,18 @@
 version: "3"
 services:
+  postgres:
+    container_name: postgres
+    image: postgres:11.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "user_account"
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./sql/ddl.sql:/docker-entrypoint-initdb.d/1-init.sql"
+      - "./sql/dml.sql:/docker-entrypoint-initdb.d/2-init.sql"
   zookeeper:
     container_name: zookeeper
     image: "bitnami/zookeeper:latest"

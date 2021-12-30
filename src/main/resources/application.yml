@@ -29,10 +29,10 @@ spring:
             partition-key-expression: headers['partition-key']
             #partition-count: 3
   datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:memdb;DB_CLOSE_ON_EXIT=FALSE
-    username: sa
-    password:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/user_account?currentSchema=hex_user_account
+    username: admin
+    password: admin
   h2:
     console:
       enabled: true

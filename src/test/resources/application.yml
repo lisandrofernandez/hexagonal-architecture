@@ -14,10 +14,7 @@ spring:
           binder: kafka
           destination: fct.user-account
   datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
+    driverClassName: org.postgresql.Driver
   jackson:
     default-property-inclusion: non_null
     deserialization:
@@ -29,3 +26,6 @@ spring:
     open-in-view: false
   main:
     allow-bean-definition-overriding: true
+  sql:
+    init:
+      mode: always

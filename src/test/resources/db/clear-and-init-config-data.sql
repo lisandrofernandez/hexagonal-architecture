@@ -1,6 +1,0 @@
--- clear data
-SET REFERENTIAL_INTEGRITY FALSE;
-TRUNCATE TABLE user_account;
-SET REFERENTIAL_INTEGRITY TRUE;
-
--- init config data
