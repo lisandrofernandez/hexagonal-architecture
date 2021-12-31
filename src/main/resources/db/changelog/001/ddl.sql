@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; -- This is required to auto generate UUID values
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS hex_user_account.user_account (
     id                  uuid NOT NULL DEFAULT uuid_generate_v4(),

@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: "001"
+      author: Lisandro Fernandez
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: ddl.sql
+            relativeToChangelogFile: true

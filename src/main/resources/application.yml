@@ -33,9 +33,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/user_account?currentSchema=hex_user_account
     username: admin
     password: admin
-  h2:
-    console:
-      enabled: true
   jackson:
     default-property-inclusion: non_null
     deserialization:
@@ -48,3 +45,5 @@ spring:
   kafka:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
