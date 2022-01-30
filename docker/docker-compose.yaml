@@ -5,9 +5,9 @@ services:
     image: postgres:11.4
     restart: unless-stopped
     environment:
+      POSTGRES_DB: "user_account"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
-      POSTGRES_DB: "user_account"
     ports:
       - "5432:5432"
     volumes:
