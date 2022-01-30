@@ -11,6 +11,7 @@ import com.github.lisandrofernandez.hexagonal.infrastructure.in.api.dto.UserAcco
 import com.github.lisandrofernandez.hexagonal.infrastructure.in.api.mapper.UserAccountResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ import java.util.UUID;
 
 // inbound adapter
 @RestController
-@RequestMapping(UserAccountController.BASE_URL)
+@RequestMapping(value = UserAccountController.BASE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class UserAccountController {
     public static final String BASE_URL = "/api/v1/users";
