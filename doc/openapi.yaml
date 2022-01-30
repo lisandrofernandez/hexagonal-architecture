@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: User Accounts API
+  description: A RESTful API to manage user accounts.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: user-account
+    description: Operations about user accounts
+
+paths:
+  /api/v1/users:
+    post:
+      tags:
+        - user-account
+      description: Creates a user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - name
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  example: john.doe
+                  description: Username which uniquely identifies the account in a non-case sensitive way
+                name:
+                  type: string
+                  example: John Doe
+                  description: User full name
+      responses:
+        '200':
+          description: Successfully created a new user account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponseUserAccount'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/v1/users/{id}:
+    get:
+      tags:
+        - user-account
+      description: Returns a user account by its ID
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+            format: uuid
+          description: User account ID
+          required: true
+          example: 11c7b97e-0de7-47bb-8593-4a1a1e95ec6a
+      responses:
+        '200':
+          description: Successfully returns a user account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleResponseUserAccount'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    SingleResponseUserAccount:
+      type: object
+      properties:
+        content:
+          $ref: '#/components/schemas/UserAccount'
+    UserAccount:
+      type: object
+      required:
+        - id
+        - username
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User account id
+          example: 11c7b97e-0de7-47bb-8593-4a1a1e95ec6a
+        username:
+          type: string
+          description: Username which uniquely identifies the account in a non-case sensitive way
+          example: john.doe
+        name:
+          type: string
+          description: User full name
+          example: John Doe
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - timestamp
+            - http_status
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: Epoch timestamp with a millisecond precision
+              example: 1635588030126
+            http_status:
+              type: integer
+              format: int32
+              description: Username which uniquely identifies the account in a non-case sensitive way
+              example: 400
+            code:
+              type: string
+              description: Error code
+              example: ERRCOD4A0
+            message:
+              type: string
+              description: Error message
+              example: there was an error in the request
+            messages:
+              type: array
+              items:
+                type: string
+              description: Additional messages
+              example: [error in field_1, error in field_4]

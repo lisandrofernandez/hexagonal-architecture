@@ -1,0 +1,94 @@
+asyncapi: '2.2.0'
+info:
+  title: User Accounts API
+  version: '1.0.0'
+  description: API to manage user accounts.
+  license:
+    name: MIT
+servers:
+  kakfa:
+    url: localhost
+    protocol: kafka
+channels:
+  cmd.user-account:
+    subscribe:
+      summary: Request about changes for a particular user account.
+      message:
+        $ref: '#/components/messages/CmdUserAccount'
+  fct.user-account:
+    publish:
+      summary: Inform about changes for a particular user account.
+      operationId: sendUserAccount
+      message:
+        $ref: '#/components/messages/FtcUserAccount'
+components:
+  messages:
+    CmdUserAccount:
+      headers:
+        $ref: '#/components/schemas/CmdUserAccountHeaders'
+      payload:
+        $ref: '#/components/schemas/CmdUserAccountPayload'
+    FtcUserAccount:
+      headers:
+        $ref: '#/components/schemas/FtcUserAccountHeaders'
+      payload:
+        $ref: '#/components/schemas/FtcUserAccountPayload'
+  schemas:
+    # headers
+    CmdUserAccountHeaders:
+      type: object
+      required:
+        - event-type
+      properties:
+        event-type:
+          type: string
+          description: Event type
+          enum:
+            - DELETE
+    FtcUserAccountHeaders:
+      type: object
+      required:
+        - event-type
+        - partition-key
+      properties:
+        event-type:
+          type: string
+          description: Event type
+          enum:
+            - CREATE
+            - DELETE
+        partition-key:
+          type: string
+          format: uuid
+          description: User account id
+          example: 11c7b97e-0de7-47bb-8593-4a1a1e95ec6a
+    # payloads
+    CmdUserAccountPayload:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+          description: Username which uniquely identifies the account in a non-case sensitive way
+          example: john.doe
+    FtcUserAccountPayload:
+      type: object
+      required:
+        - id
+        - username
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User account id
+          example: 11c7b97e-0de7-47bb-8593-4a1a1e95ec6a
+        username:
+          type: string
+          description: Username which uniquely identifies the account in a non-case sensitive way
+          example: john.doe
+        name:
+          type: string
+          description: User full name
+          example: John Doe
