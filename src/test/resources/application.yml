@@ -1,20 +1,18 @@
 spring:
-  cloud:
-    stream:
-      function:
-        definition: cmdUserAccountConsumer
-      kafka:
-        binder:
-          brokers: localhost
-      bindings:
-        cmdUserAccountConsumer-in-0:
-          binder: kafka
-          destination: cmd.user-account
-        fctUserAccountProducer-out-0:
-          binder: kafka
-          destination: fct.user-account
+  cloud.stream:
+    bindings:
+      cmdUserAccountConsumer-in-0:
+        binder: kafka
+        destination: cmd.user-account
+      fctUserAccountProducer-out-0:
+        binder: kafka
+        destination: fct.user-account
+    function.definition: cmdUserAccountConsumer
+    kafka:
+      binder:
+        brokers: localhost
   datasource:
-    driverClassName: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
   jackson:
     default-property-inclusion: non_null
     deserialization:

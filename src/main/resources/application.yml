@@ -1,35 +1,32 @@
 spring:
-  cloud:
-    stream:
-      function:
-        definition: cmdUserAccountConsumer
-      kafka:
-        binder:
-          brokers: localhost
-        bindings:
-          cmdUserAccountConsumer-in-0:
-            consumer:
-              startOffset: earliest
-          fctUserAccountProducer-out-0:
-            producer:
-              message-key-expression: headers['partition-key']
+  cloud.stream:
+    bindings:
+      cmdUserAccountConsumer-in-0:
+        binder: kafka
+        destination: cmd.user-account
+        content-type: application/json
+        group: hex-user-account
+      fctUserAccountProducer-out-0:
+        binder: kafka
+        destination: fct.user-account
+        content-type: application/json
+        producer:
+          partition-key-expression: headers['partition-key']
+    function.definition: cmdUserAccountConsumer
+    kafka:
+      binder:
+        brokers: localhost:9092
+        producer-properties:
+          key.serializer: org.apache.kafka.common.serialization.StringSerializer
       bindings:
         cmdUserAccountConsumer-in-0:
-          binder: kafka
-          destination: cmd.user-account
-          content-type: application/json
-          group: hex-user-account
+          consumer:
+            start-offset: earliest
         fctUserAccountProducer-out-0:
-          binder: kafka
-          destination: fct.user-account
-          content-type: application/json
           producer:
-            bufferSize: 900000
-            batchTimeout: 1000
-            partition-key-expression: headers['partition-key']
-            #partition-count: 3
+            message-key-expression: headers['partition-key']
   datasource:
-    driverClassName: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/user_account?currentSchema=hex_user_account
     username: admin
     password: admin
@@ -42,8 +39,5 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
-  kafka:
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
