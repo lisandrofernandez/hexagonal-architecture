@@ -10,8 +10,6 @@ spring:
         binder: kafka
         destination: fct.user-account
         content-type: application/json
-        producer:
-          partition-key-expression: headers['partition-key']
     function.definition: cmdUserAccountConsumer
     kafka:
       binder:

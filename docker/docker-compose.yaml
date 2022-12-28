@@ -1,9 +1,9 @@
-version: "3"
+version: "3.9"
+
 services:
   postgres:
-    container_name: postgres
     image: postgres:11.4
-    restart: unless-stopped
+    container_name: postgres
     environment:
       POSTGRES_DB: "user_account"
       POSTGRES_USER: "admin"
@@ -12,21 +12,40 @@ services:
       - "5432:5432"
     volumes:
       - "./sql/ddl.sql:/docker-entrypoint-initdb.d/1-init.sql"
+
   zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.1
     container_name: zookeeper
-    image: "bitnami/zookeeper:latest"
     ports:
       - "2181:2181"
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      ZOOKEEPER_CLIENT_PORT: 2181
+
   kafka:
+    image: confluentinc/cp-kafka:7.3.1
     container_name: kafka
-    image: "bitnami/kafka:latest"
+    depends_on:
+      - zookeeper
     ports:
       - "9092:9092"
     environment:
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+
+  init-kafka:
+    image: confluentinc/cp-kafka:7.3.1
+    container_name: init-kafka
     depends_on:
-      - zookeeper
+      - kafka
+    volumes:
+      - "./kafka/init.sh:/init.sh"
+    entrypoint: [ "/bin/bash", "/init.sh" ]
+
+networks:
+  default:
+    name: hexagonal-architecture-network
