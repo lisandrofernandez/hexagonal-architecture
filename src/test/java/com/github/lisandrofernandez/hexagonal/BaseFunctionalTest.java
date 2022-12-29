@@ -1,6 +1,7 @@
 package com.github.lisandrofernandez.hexagonal;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,7 +15,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/clear-tables-and-init-config-data.sql")
 @SqlMergeMode(MergeMode.MERGE)
 @Testcontainers
+@ActiveProfiles("test")
 public abstract class BaseFunctionalTest {
+
     protected static final String TOPIC_NAME_CMD_USER_ACCOUNT = "cmd.user-account";
     protected static final String TOPIC_NAME_FTC_USER_ACCOUNT = "fct.user-account";
 

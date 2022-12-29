@@ -96,7 +96,7 @@ class UserAccountControllerFT extends BaseFunctionalTest {
                 .andExpect(content().json("""
                          {
                            "error": {
-                             "http_status": 404,
+                             "httpStatus": 404,
                              "timestamp": 1635588030126,
                              "message": "user account not found"
                            }
@@ -166,7 +166,7 @@ class UserAccountControllerFT extends BaseFunctionalTest {
                 .andExpect(content().json("""
                         {
                           "error": {
-                            "http_status": 400,
+                            "httpStatus": 400,
                             "timestamp": 1635588030126,
                             "message": "user account Jane.roe already exists"
                           }
