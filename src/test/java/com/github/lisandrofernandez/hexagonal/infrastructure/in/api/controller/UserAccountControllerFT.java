@@ -1,29 +1,21 @@
 package com.github.lisandrofernandez.hexagonal.infrastructure.in.api.controller;
 
-import com.github.lisandrofernandez.hexagonal.BaseFunctionalTest;
+import com.github.lisandrofernandez.hexagonal.AbstractFunctionalTest;
+import com.github.lisandrofernandez.hexagonal.FixedClockTestConfiguration;
 import com.github.lisandrofernandez.hexagonal.common.UuidGenerator;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.stream.binder.test.OutputDestination;
-import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
+import java.util.List;
 import java.util.UUID;
 
 import static com.github.lisandrofernandez.hexagonal.infrastructure.in.api.controller.UserAccountController.BASE_URL;
@@ -35,32 +27,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-@Import(TestChannelBinderConfiguration.class)
-class UserAccountControllerFT extends BaseFunctionalTest {
+@ContextConfiguration(classes = FixedClockTestConfiguration.class)
+class UserAccountControllerFT extends AbstractFunctionalTest {
+
     private static final String HEADER_EVENT_TYPE = "event-type";
     private static final String HEADER_PARTITION_KEY = "partition-key";
 
-    @TestConfiguration
-    static class FixedClockConfiguration {
-        @Bean
-        Clock clock() {
-            return Clock.fixed(Instant.parse("2021-10-30T10:00:30.126Z"), ZoneOffset.UTC);
-        }
-    }
-
     @MockBean
-    UuidGenerator uuidGenerator;
+    private UuidGenerator uuidGenerator;
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private OutputDestination outputDestination;
-
-    @BeforeEach
-    void setup() {
-        outputDestination.clear();
-    }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/insert-test-data.sql")
@@ -108,7 +85,8 @@ class UserAccountControllerFT extends BaseFunctionalTest {
     @Test
     void createUserAccountOkTest() throws Exception {
         // given
-        given(uuidGenerator.generateUuid()).willReturn(UUID.fromString("3db1313b-983b-468c-9df2-f4977340d882"));
+        String id = "3db1313b-983b-468c-9df2-f4977340d882";
+        given(uuidGenerator.generateUuid()).willReturn(UUID.fromString(id));
 
         // when
         String requestBody = """
@@ -131,12 +109,17 @@ class UserAccountControllerFT extends BaseFunctionalTest {
                         """ , true)
                 );
 
-        // and a message is sent
-        Message<byte[]> outgoingMessage = outputDestination.receive(0, TOPIC_NAME_FTC_USER_ACCOUNT);
-        MessageHeaders outgoingHeaders = outgoingMessage.getHeaders();
-        assertThat(outgoingHeaders.get(HEADER_PARTITION_KEY)).isEqualTo("3db1313b-983b-468c-9df2-f4977340d882");
-        assertThat(outgoingHeaders.get(HEADER_EVENT_TYPE)).isEqualTo("CREATE");
-        String outgoingPayload = new String(outgoingMessage.getPayload(), StandardCharsets.UTF_8);
+        // and a created user account message is sent
+        List<ConsumerRecord<String, String>> records = getConsumerRecords(TOPIC_NAME_FCT_USER_ACCOUNT);
+        assertThat(records).hasSize(1);
+        ConsumerRecord<String, String> record = records.get(0);
+        // with a key
+        assertThat(record.key()).isEqualTo(id);
+        // with headers
+        assertThat(getHeaders(record))
+                .containsEntry(HEADER_PARTITION_KEY, id)
+                .containsEntry(HEADER_EVENT_TYPE, "CREATE");
+        // with a payload
         String expectedOutgoingPayload = """
                 {
                   "id": "3db1313b-983b-468c-9df2-f4977340d882",
@@ -144,7 +127,7 @@ class UserAccountControllerFT extends BaseFunctionalTest {
                   "name": "Eduardo Coudet"
                 }
                 """;
-        JSONAssert.assertEquals(expectedOutgoingPayload, outgoingPayload, JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(expectedOutgoingPayload, record.value(), JSONCompareMode.STRICT);
     }
 
     @Test
@@ -174,7 +157,8 @@ class UserAccountControllerFT extends BaseFunctionalTest {
                         """, true)
                 );
 
-        // and no message is sent
-        assertThat(outputDestination.receive(0, TOPIC_NAME_FTC_USER_ACCOUNT)).isNull();
+        // and no user account message is sent
+        List<ConsumerRecord<String, String>> records = getConsumerRecords(TOPIC_NAME_FCT_USER_ACCOUNT);
+        assertThat(records).isEmpty();
     }
 }

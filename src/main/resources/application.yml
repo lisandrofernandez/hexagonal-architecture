@@ -13,7 +13,10 @@ spring:
     function.definition: cmdUserAccountConsumer
     kafka:
       binder:
+        auto-create-topics: false
         brokers: localhost:9092
+        consumer-properties:
+          allow.auto.create.topics: false
         producer-properties:
           key.serializer: org.apache.kafka.common.serialization.StringSerializer
       bindings:
