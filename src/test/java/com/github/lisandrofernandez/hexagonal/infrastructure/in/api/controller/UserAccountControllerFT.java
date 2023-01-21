@@ -7,13 +7,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,12 +18,7 @@ import java.util.UUID;
 import static com.github.lisandrofernandez.hexagonal.infrastructure.in.api.controller.UserAccountController.BASE_URL;
 import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
 @ContextConfiguration(classes = FixedClockTestConfiguration.class)
 class UserAccountControllerFT extends AbstractFunctionalTest {
 
@@ -36,50 +28,50 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
     @MockBean
     private UuidGenerator uuidGenerator;
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/insert-test-data.sql")
-    void getByIdOkTest() throws Exception {
-        // given
+    void getByIdOkTest() {
+        // given there exists initial DB data
+        // and given
         String id = "ed570cec-fd3b-4278-ac68-f48d115cfc87";
 
-        // when
-        mockMvc.perform(get(BASE_URL + "/{id}", id).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()) // then
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("""
-                         {
-                           "content": {
-                             "id": "ed570cec-fd3b-4278-ac68-f48d115cfc87",
-                             "username": "jane.roe",
-                             "name": "Jane Roe"
-                           }
-                         }
-                         """, true)
-                );
+        // when requesting an existing user account by its ID
+        webTestClient.get().uri(BASE_URL + "/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk() // then
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json("""
+                        {
+                          "content": {
+                            "id": "ed570cec-fd3b-4278-ac68-f48d115cfc87",
+                            "username": "jane.roe",
+                            "name": "Jane Roe"
+                          }
+                        }
+                        """, true);
     }
 
     @Test
-    void getByIdNotFoundTest() throws Exception {
+    void getByIdNotFoundTest() {
         // given
         String id = "ed570cec-fd3b-4278-ac68-f48d115cfc87";
 
-        // when
-        mockMvc.perform(get(BASE_URL + "/{id}", id).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound()) // then
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("""
-                         {
-                           "error": {
-                             "httpStatus": 404,
-                             "timestamp": 1635588030126,
-                             "message": "user account not found"
-                           }
-                         }
-                         """, true)
-                );
+        // when requesting a non-existing user account by an ID
+        webTestClient.get().uri(BASE_URL + "/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isNotFound() // then
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json("""
+                        {
+                          "error": {
+                            "httpStatus": 404,
+                            "timestamp": 1635588030126,
+                            "message": "user account not found"
+                          }
+                        }
+                        """, true);
     }
 
     @Test
@@ -88,17 +80,18 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
         String id = "3db1313b-983b-468c-9df2-f4977340d882";
         given(uuidGenerator.generateUuid()).willReturn(UUID.fromString(id));
 
-        // when
+        // when requesting the creation of a user account
         String requestBody = """
-            {"username": "EduardoCoudet", "name": "Eduardo Coudet"}
-            """;
-        mockMvc.perform(post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
-                )
-                .andExpect(status().isCreated()) // then
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("""
+                {"username": "EduardoCoudet", "name": "Eduardo Coudet"}
+                """;
+        webTestClient.post().uri(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody)
+                .exchange()
+                .expectStatus().isCreated() // then - TODO: should be Ok if returning entity
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json("""
                         {
                           "content": {
                             "id": "3db1313b-983b-468c-9df2-f4977340d882",
@@ -106,8 +99,7 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
                             "name": "Eduardo Coudet"
                           }
                         }
-                        """ , true)
-                );
+                        """, true);
 
         // and a created user account message is sent
         List<ConsumerRecord<String, String>> records = getConsumerRecords(TOPIC_NAME_FCT_USER_ACCOUNT);
@@ -133,20 +125,22 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/insert-test-data.sql")
     void createUserAccountAlreadyExistsTest() throws Exception {
-        // given
+        // given there exists initial DB data
+        // and given
         given(uuidGenerator.generateUuid()).willReturn(UUID.fromString("3db1313b-983b-468c-9df2-f4977340d882"));
 
-        // when
+        // when requesting the creation of an exsiting user account
         String requestBody = """
-            {"username": "Jane.roe", "name": "Jane B. Roe"}
-            """;
-        mockMvc.perform(post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
-                )
-                .andExpect(status().isBadRequest()) // then
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("""
+                {"username": "Jane.roe", "name": "Jane B. Roe"}
+                """;
+        webTestClient.post().uri(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody)
+                .exchange()
+                .expectStatus().isBadRequest() // then
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json("""
                         {
                           "error": {
                             "httpStatus": 400,
@@ -154,8 +148,7 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
                             "message": "user account Jane.roe already exists"
                           }
                         }
-                        """, true)
-                );
+                        """, true);
 
         // and no user account message is sent
         List<ConsumerRecord<String, String>> records = getConsumerRecords(TOPIC_NAME_FCT_USER_ACCOUNT);

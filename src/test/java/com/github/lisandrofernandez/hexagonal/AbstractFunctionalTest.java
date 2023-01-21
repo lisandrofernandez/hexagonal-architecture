@@ -12,7 +12,9 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,6 +23,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.context.jdbc.SqlMergeMode.MergeMode;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -37,11 +40,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.StreamSupport;
 
-@SpringBootTest(classes = KafkaTestConfiguration.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = KafkaTestConfiguration.class)
+@AutoConfigureWebTestClient
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/clear-tables-and-init-config-data.sql")
 @SqlMergeMode(MergeMode.MERGE)
-@Testcontainers
 @ActiveProfiles("test")
+@Testcontainers
 public abstract class AbstractFunctionalTest {
 
     protected static final String TOPIC_NAME_FCT_USER_ACCOUNT = KafkaTestConfiguration.TOPIC_NAME_FCT_USER_ACCOUNT;
@@ -66,6 +70,9 @@ public abstract class AbstractFunctionalTest {
 
     @Autowired
     protected KafkaTemplate<String, String> cmdUserAccountKafkaTemplate;
+
+    @Autowired
+    protected WebTestClient webTestClient;
 
     private static PostgreSQLContainer<?> createPostgreSqlContainer() {
         return new PostgreSQLContainer<>("postgres:15.1-alpine")

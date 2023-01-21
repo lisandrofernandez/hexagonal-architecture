@@ -30,6 +30,8 @@ class CmdUserAccountFT extends AbstractFunctionalTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/insert-test-data.sql")
     void processMessageOkTest() throws Exception {
+        // given there exists initial DB data
+
         // when a message to delete an existing user account is received
         Message<String> incomingMessage = MessageBuilder
                 .withPayload("{\"username\": \"jane.roe\"}")
