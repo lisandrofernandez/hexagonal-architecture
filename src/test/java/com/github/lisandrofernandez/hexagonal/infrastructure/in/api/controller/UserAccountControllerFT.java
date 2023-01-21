@@ -89,7 +89,7 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
                 .exchange()
-                .expectStatus().isCreated() // then - TODO: should be Ok if returning entity
+                .expectStatus().isOk() // then
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().json("""
                         {
@@ -124,12 +124,12 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/insert-test-data.sql")
-    void createUserAccountAlreadyExistsTest() throws Exception {
+    void createUserAccountAlreadyExistsTest() {
         // given there exists initial DB data
         // and given
         given(uuidGenerator.generateUuid()).willReturn(UUID.fromString("3db1313b-983b-468c-9df2-f4977340d882"));
 
-        // when requesting the creation of an exsiting user account
+        // when requesting the creation of an existing user account
         String requestBody = """
                 {"username": "Jane.roe", "name": "Jane B. Roe"}
                 """;

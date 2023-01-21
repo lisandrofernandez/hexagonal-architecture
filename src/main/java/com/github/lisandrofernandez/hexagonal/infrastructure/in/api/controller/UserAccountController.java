@@ -43,7 +43,6 @@ public class UserAccountController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     SingleApiResponse<UserAccountResponse> create(@RequestBody UserAccountCreationRequest userAccountCreationRequest) {
         CreateUserAccountCommand createUserAccountCommand = mapToCreateUserAccountCommand(userAccountCreationRequest);
         UserAccount userAccount;
