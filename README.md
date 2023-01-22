@@ -5,7 +5,7 @@ A hexagonal architecture based web application which manages user accounts.
 
 ## Requirements
 
-* JDK 17.
+* JDK 17+.
 * Docker and Docker Compose.
 
 ## Run

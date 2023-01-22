@@ -156,4 +156,4 @@ components:
               items:
                 type: string
               description: Additional messages
-              example: [error in field_1, error in field_4]
+              example: [ error in field_1, error in field_4 ]
