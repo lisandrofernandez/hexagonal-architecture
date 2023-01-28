@@ -131,14 +131,14 @@ components:
           type: object
           required:
             - timestamp
-            - http_status
+            - httpStatusCode
           properties:
             timestamp:
               type: integer
               format: int64
               description: Epoch timestamp with a millisecond precision
               example: 1635588030126
-            http_status:
+            httpStatusCode:
               type: integer
               format: int32
               description: Username which uniquely identifies the account in a non-case sensitive way
