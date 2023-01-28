@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LocalDateTimeToEpochMilliJsonSerializerTest {
+class InstantToEpochMilliJsonSerializerTest {
 
     @Test
     void serializeTest() throws Exception {
@@ -20,11 +20,11 @@ class LocalDateTimeToEpochMilliJsonSerializerTest {
         Writer writer = new StringWriter();
         JsonGenerator jsonGenerator = new JsonFactory().createGenerator(writer);
         SerializerProvider serializerProvider = new ObjectMapper().getSerializerProvider();
-        LocalDateTime ldt = LocalDateTime.of(2021, 4, 23, 15, 17, 53, 123456789);
-        LocalDateTimeToEpochMilliJsonSerializer serializer = new LocalDateTimeToEpochMilliJsonSerializer();
+        Instant instant = Instant.ofEpochMilli(1619191073123L);
+        InstantToEpochMilliJsonSerializer serializer = new InstantToEpochMilliJsonSerializer();
 
         // when
-        serializer.serialize(ldt, jsonGenerator, serializerProvider);
+        serializer.serialize(instant, jsonGenerator, serializerProvider);
         jsonGenerator.flush();
 
         // then

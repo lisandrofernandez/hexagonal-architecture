@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @ControllerAdvice
 @Slf4j
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .httpStatusCode(httpStatusCode)
-                .timestamp(LocalDateTime.now(clock))
+                .timestamp(Instant.now(clock))
                 .message(message)
                 .build();
 
