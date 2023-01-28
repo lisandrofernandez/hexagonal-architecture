@@ -39,7 +39,12 @@ public class FctUserAccountMessageProducerAdapter implements FctUserAccountMessa
     }
 
     private void sendMessage(Message<UserAccountPayload> message) {
-        boolean sent = streamBridge.send(BINDING_NAME, message);
+        boolean sent;
+        try {
+            sent = streamBridge.send(BINDING_NAME, message);
+        } catch (Exception e) {
+            throw new OutgoingMessagingException("Error sending message: " + message, e);
+        }
         if (!sent) {
             throw new OutgoingMessagingException("Error sending message: " + message);
         }

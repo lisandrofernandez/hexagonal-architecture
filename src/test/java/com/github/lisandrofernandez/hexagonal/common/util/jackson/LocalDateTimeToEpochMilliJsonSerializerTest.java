@@ -28,6 +28,6 @@ class LocalDateTimeToEpochMilliJsonSerializerTest {
         jsonGenerator.flush();
 
         // then
-        assertThat(writer.toString()).isEqualTo("1619191073123");
+        assertThat(writer.toString()).hasToString("1619191073123");
     }
 }

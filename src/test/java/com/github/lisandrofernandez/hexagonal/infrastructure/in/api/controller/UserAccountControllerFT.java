@@ -66,7 +66,7 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
                 .expectBody().json("""
                         {
                           "error": {
-                            "httpStatus": 404,
+                            "httpStatusCode": 404,
                             "timestamp": 1635588030126,
                             "message": "user account not found"
                           }
@@ -143,7 +143,7 @@ class UserAccountControllerFT extends AbstractFunctionalTest {
                 .expectBody().json("""
                         {
                           "error": {
-                            "httpStatus": 400,
+                            "httpStatusCode": 400,
                             "timestamp": 1635588030126,
                             "message": "user account Jane.roe already exists"
                           }

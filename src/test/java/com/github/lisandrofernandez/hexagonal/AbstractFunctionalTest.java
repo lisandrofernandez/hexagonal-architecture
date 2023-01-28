@@ -31,6 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -122,10 +123,10 @@ public abstract class AbstractFunctionalTest {
     }
 
     protected List<ConsumerRecord<String, String>> getConsumerRecords(String topicName) {
-        return getConsumerRecords(topicName, 1_000);
+        return getConsumerRecords(topicName, Duration.ofSeconds(1));
     }
 
-    protected List<ConsumerRecord<String, String>> getConsumerRecords(String topicName, long timeout) {
+    protected List<ConsumerRecord<String, String>> getConsumerRecords(String topicName, Duration timeout) {
         KafkaConsumer<String, String> kafkaConsumer = createKafkaConsumer(topicName);
         ConsumerRecords<String, String> records = KafkaTestUtils.getRecords(kafkaConsumer, timeout);
         kafkaConsumer.close();

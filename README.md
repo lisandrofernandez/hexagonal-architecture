@@ -1,6 +1,6 @@
 # hexagonal-architecture
 
-A hexagonal architecture based web application which manages user accounts.
+A hexagonal architecture based Web application which manages user accounts.
 
 
 ## Requirements
@@ -17,20 +17,21 @@ First, run `docker-compose`:
 docker-compose --file docker/docker-compose.yaml up
 ```
 
-Then, in another terminal, start the application using the Maven wrapper:
+Then, in another terminal, start the application using the Gradle wrapper:
 
 ```sh
-./mvnw spring-boot:run
+./gradlew bootRun
 ```
 
 ## Description
 
-This repository contains a user account web application based on principles
+This repository contains a user account Web application based on principles
 behind hexagonal architecture (Cockburn [1]).
 
 The accounts can be queried and manipulated through a RESTful API. See
-[doc/openapi.yaml](doc/openapi.yaml) for more details. Accounts can also be deleted through a Kafka message.
-See [doc/asyncapi.yaml](doc/asyncapi.yaml) for more details.
+[doc/openapi.yaml](doc/openapi.yaml) for more details. Accounts can also be
+deleted through a Kafka message. See [doc/asyncapi.yaml](doc/asyncapi.yaml) for
+more details.
 
 ## References
 
