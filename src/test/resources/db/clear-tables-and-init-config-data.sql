@@ -1,4 +1,4 @@
 -- clear tables
-TRUNCATE TABLE hex_user_account.user_account;
+TRUNCATE TABLE user_account;
 
 -- init config data
