@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:15.1-alpine
+    image: postgres:15.3-alpine
     container_name: postgres
     environment:
       POSTGRES_DB: "user_account"
@@ -14,7 +14,7 @@ services:
       - "./sql/ddl.sql:/docker-entrypoint-initdb.d/1-init.sql"
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.1
+    image: confluentinc/cp-zookeeper:7.4.0
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -22,7 +22,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
 
   kafka:
-    image: confluentinc/cp-kafka:7.3.1
+    image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
     depends_on:
       - zookeeper
@@ -38,7 +38,7 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
 
   init-kafka:
-    image: confluentinc/cp-kafka:7.3.1
+    image: confluentinc/cp-kafka:7.4.0
     container_name: init-kafka
     depends_on:
       - kafka

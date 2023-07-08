@@ -76,14 +76,14 @@ public abstract class AbstractFunctionalTest {
     protected WebTestClient webTestClient;
 
     private static PostgreSQLContainer<?> createPostgreSqlContainer() {
-        return new PostgreSQLContainer<>("postgres:15.1-alpine")
+        return new PostgreSQLContainer<>("postgres:15.3-alpine")
                 .withDatabaseName("user_account")
                 .withUrlParam("currentSchema", "hex_user_account")
                 .withInitScript("db/create-schema.sql");
     }
 
     private static KafkaContainer createKafkaContainer() {
-        return new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.3.1"))
+        return new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"))
                 .withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "false");
     }
 

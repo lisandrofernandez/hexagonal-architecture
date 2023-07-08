@@ -10,11 +10,11 @@ A hexagonal architecture based Web application which manages user accounts.
 
 ## Run
 
-First, run `docker-compose`:
+First, run `docker compose`:
 
 ```sh
 # start PostgreSQL database and Kafka broker
-docker-compose --file docker/docker-compose.yaml up
+docker compose --file docker/docker-compose.yaml up
 ```
 
 Then, in another terminal, start the application using the Gradle wrapper:
