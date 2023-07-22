@@ -1,9 +1,11 @@
 package com.github.lisandrofernandez.hexagonal.infrastructure.in.api.common;
 
 import com.github.lisandrofernandez.hexagonal.common.util.Assert;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public final class SingleApiResponse<T> {
     private final T content;
 

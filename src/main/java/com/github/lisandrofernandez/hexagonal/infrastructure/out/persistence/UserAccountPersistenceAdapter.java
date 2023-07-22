@@ -17,6 +17,9 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class UserAccountPersistenceAdapter implements UserAccountRepository {
+
+    public static final String USERNAME_MUST_NOT_BE_NULL = "username must not be null";
+
     private final UserAccountJpaRepository userAccountJpaRepository;
     private final UserAccountJpaEntityMapper userAccountJpaEntityMapper;
 
@@ -40,7 +43,7 @@ public class UserAccountPersistenceAdapter implements UserAccountRepository {
 
     @Override
     public Optional<UserAccount> findByUsername(String username) {
-        Assert.notNull(username, "username must not be null");
+        Assert.notNull(username, USERNAME_MUST_NOT_BE_NULL);
 
         return userAccountJpaRepository.findByLowercasedUsername(username.toLowerCase(Locale.ROOT))
                 .map(userAccountJpaEntityMapper::toDomain);
@@ -48,7 +51,7 @@ public class UserAccountPersistenceAdapter implements UserAccountRepository {
 
     @Override
     public boolean existsByUsername(String username) {
-        Assert.notNull(username, "username must not be null");
+        Assert.notNull(username, USERNAME_MUST_NOT_BE_NULL);
 
         return userAccountJpaRepository.existsByLowercasedUsername(username.toLowerCase(Locale.ROOT));
     }
@@ -56,7 +59,7 @@ public class UserAccountPersistenceAdapter implements UserAccountRepository {
     @Override
     @Transactional
     public Optional<UserAccount> deleteByUsernameAndReturnDeleted(String username) {
-        Assert.notNull(username, "username must not be null");
+        Assert.notNull(username, USERNAME_MUST_NOT_BE_NULL);
 
         return userAccountJpaRepository.findByLowercasedUsername(username.toLowerCase(Locale.ROOT))
                 .map(userAccountJpaEntity -> {

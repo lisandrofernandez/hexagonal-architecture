@@ -50,8 +50,7 @@ public class UserAccountController {
         } catch (DomainException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
-        UserAccountResponse userAccountResponse = userAccountResponseMapper.fromDomain(userAccount);
-        return SingleApiResponse.of(userAccountResponse);
+        return SingleApiResponse.of(userAccountResponseMapper.fromDomain(userAccount));
     }
 
     private CreateUserAccountCommand mapToCreateUserAccountCommand(

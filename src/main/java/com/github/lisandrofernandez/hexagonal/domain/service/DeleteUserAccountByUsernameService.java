@@ -4,14 +4,10 @@ import com.github.lisandrofernandez.hexagonal.common.stereotype.UseCase;
 import com.github.lisandrofernandez.hexagonal.common.util.Assert;
 import com.github.lisandrofernandez.hexagonal.domain.model.UserAccount;
 import com.github.lisandrofernandez.hexagonal.domain.port.in.DeleteUserAccountByUsernameHandler;
-import com.github.lisandrofernandez.hexagonal.domain.port.out.command.SendUserAccountMessageCommand;
-import com.github.lisandrofernandez.hexagonal.domain.port.out.messaging.EventType;
 import com.github.lisandrofernandez.hexagonal.domain.port.out.messaging.FctUserAccountMessageProducer;
 import com.github.lisandrofernandez.hexagonal.domain.port.out.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Optional;
 
 @UseCase
 @Slf4j
@@ -24,21 +20,22 @@ public class DeleteUserAccountByUsernameService implements DeleteUserAccountByUs
     public boolean delete(String username) {
         Assert.notNull(username, "username must not be null");
 
-        Optional<UserAccount> optionalUserAccount = userAccountRepository.deleteByUsernameAndReturnDeleted(username);
-        optionalUserAccount.ifPresent(this::sendDeletedUserAccountMessage);
+        UserAccount deletedUserAccount = userAccountRepository.deleteByUsernameAndReturnDeleted(username)
+                .orElse(null);
 
-        return optionalUserAccount.isPresent();
+        if (deletedUserAccount == null) {
+            return false;
+        }
+
+        sendDeletedUserAccountMessage(deletedUserAccount);
+        return true;
     }
 
     private void sendDeletedUserAccountMessage(UserAccount userAccount) {
-        SendUserAccountMessageCommand command = SendUserAccountMessageCommand.builder()
-                .eventType(EventType.DELETE)
-                .userAccount(userAccount)
-                .build();
         try {
-            fctUserAccountMessageProducer.sendUserAccount(command);
+            fctUserAccountMessageProducer.sendDeletedUserAccount(userAccount.getId());
         } catch (Exception e) {
-            log.error("Error sending user account message", e);
+            log.error("Error sending deleted user account message | user account ID: {}", userAccount.getId(), e);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.github.lisandrofernandez.hexagonal;
 
+import com.github.lisandrofernandez.hexagonal.infrastructure.out.persistence.jpa.repository.UserAccountJpaRepository;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
@@ -70,10 +71,13 @@ public abstract class AbstractFunctionalTest {
     private String bootstrapServer;
 
     @Autowired
-    protected KafkaTemplate<String, String> cmdUserAccountKafkaTemplate;
+    protected WebTestClient webTestClient;
 
     @Autowired
-    protected WebTestClient webTestClient;
+    protected UserAccountJpaRepository userAccountJpaRepository;
+
+    @Autowired
+    protected KafkaTemplate<String, String> cmdUserAccountKafkaTemplate;
 
     private static PostgreSQLContainer<?> createPostgreSqlContainer() {
         return new PostgreSQLContainer<>("postgres:15.3-alpine")

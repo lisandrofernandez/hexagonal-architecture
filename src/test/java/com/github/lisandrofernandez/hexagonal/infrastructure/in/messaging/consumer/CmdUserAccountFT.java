@@ -1,12 +1,8 @@
 package com.github.lisandrofernandez.hexagonal.infrastructure.in.messaging.consumer;
 
 import com.github.lisandrofernandez.hexagonal.AbstractFunctionalTest;
-import com.github.lisandrofernandez.hexagonal.infrastructure.out.persistence.jpa.repository.UserAccountJpaRepository;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.jdbc.Sql;
@@ -24,12 +20,9 @@ class CmdUserAccountFT extends AbstractFunctionalTest {
     private static final String HEADER_PARTITION_KEY = "partition-key";
     private static final String EVENT_TYPE_DELETE = "DELETE";
 
-    @Autowired
-    private UserAccountJpaRepository userAccountJpaRepository;
-
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:/db/insert-test-data.sql")
-    void processMessageOkTest() throws Exception {
+    void processDeleteUserAccountMessageOkTest() {
         // given there exists initial DB data
 
         // when a message to delete an existing user account is received
@@ -55,19 +48,12 @@ class CmdUserAccountFT extends AbstractFunctionalTest {
         assertThat(getHeaders(record))
                 .containsEntry(HEADER_PARTITION_KEY, id)
                 .containsEntry(HEADER_EVENT_TYPE, EVENT_TYPE_DELETE);
-        // with a payload
-        String expectedOutgoingPayload = """
-                {
-                  "id": "ed570cec-fd3b-4278-ac68-f48d115cfc87",
-                  "username": "jane.roe",
-                  "name": "Jane Roe"
-                }
-                """;
-        JSONAssert.assertEquals(expectedOutgoingPayload, record.value(), JSONCompareMode.STRICT);
+        // with null payload
+        assertThat(record.value()).isNull();
     }
 
     @Test
-    void processMessageWhenUserDoesNotExistTest() {
+    void processDeleteUserAccountMessageWhenUserDoesNotExistTest() {
         // when a message to delete a non-existing user account is received
         Message<String> incomingMessage = MessageBuilder
                 .withPayload("{\"username\": \"cosme.fulanito\"}")

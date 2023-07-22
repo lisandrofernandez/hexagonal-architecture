@@ -55,7 +55,7 @@ public class CreateUserAccountService implements CreateUserAccountHandler {
         try {
             fctUserAccountMessageProducer.sendUserAccount(command);
         } catch (Exception e) {
-            log.error("Error sending user account message", e);
+            log.error("Error sending created user account message | user account ID: {}", userAccount.getId(), e);
         }
     }
 }

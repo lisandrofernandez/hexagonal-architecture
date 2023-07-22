@@ -1,12 +1,11 @@
 package com.github.lisandrofernandez.hexagonal.domain.port.in.command;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter @Setter
+@Value
 @Builder(toBuilder = true)
 public class CreateUserAccountCommand {
-    private final String username;
-    private final String name;
+    String username;
+    String name;
 }

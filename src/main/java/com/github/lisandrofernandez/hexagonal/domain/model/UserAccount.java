@@ -10,6 +10,9 @@ import static com.github.lisandrofernandez.hexagonal.domain.DomainException.Asse
 
 @Value
 public class UserAccount {
+
+    private static final String INVALID_NAME = "invalid name";
+
     UUID id;
     String username;
     String name;
@@ -43,10 +46,10 @@ public class UserAccount {
         Assert.isTrue(!name.isEmpty(), "name must not be empty");
         int length = name.length();
         Assert.isTrue(length <= 300, "username must not exceed 300 characters");
-        Assert.isTrue(!Character.isWhitespace(name.charAt(0)), "invalid name");
-        Assert.isTrue(!Character.isWhitespace(name.charAt(length - 1)), "invalid name");
+        Assert.isTrue(!Character.isWhitespace(name.charAt(0)), INVALID_NAME);
+        Assert.isTrue(!Character.isWhitespace(name.charAt(length - 1)), INVALID_NAME);
         for (int i = 0; i < length; i++) {
-            Assert.isTrue(!Character.isISOControl(name.charAt(i)), "invalid name");
+            Assert.isTrue(!Character.isISOControl(name.charAt(i)), INVALID_NAME);
         }
         return name;
     }

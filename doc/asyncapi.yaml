@@ -1,4 +1,4 @@
-asyncapi: '2.2.0'
+asyncapi: '2.6.0'
 info:
   title: User Accounts API
   version: '1.0.0'
@@ -9,15 +9,16 @@ servers:
   kakfa:
     url: localhost
     protocol: kafka
+defaultContentType: application/json
 channels:
   cmd.user-account:
     subscribe:
-      summary: Request about changes for a particular user account.
+      summary: Request about changes for a user account.
       message:
         $ref: '#/components/messages/CmdUserAccount'
   fct.user-account:
     publish:
-      summary: Inform about changes for a particular user account.
+      summary: Inform about changes for a user account.
       operationId: sendUserAccount
       message:
         $ref: '#/components/messages/FtcUserAccount'
@@ -73,6 +74,8 @@ components:
           description: Username which uniquely identifies the account in a non-case sensitive way
           example: john.doe
     FtcUserAccountPayload:
+      description: |
+        null if `FtcUserAccountHeaders.event-type == "DELETE"`
       type: object
       required:
         - id

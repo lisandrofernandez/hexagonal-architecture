@@ -1,6 +1,8 @@
 package com.github.lisandrofernandez.hexagonal;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -42,13 +44,16 @@ public class KafkaTestConfiguration {
                 TopicBuilder.name(TOPIC_NAME_FCT_USER_ACCOUNT)
                         .replicas(1)
                         .partitions(3)
+                        .compact()
                         .build()
         );
     }
 
     @Bean
     public KafkaTemplate<String, String> cmdUserAccountKafkaTemplate() {
-        ProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(KafkaTestUtils.producerProps(bootstrapServer));
+        Map<String, Object> producerProps = KafkaTestUtils.producerProps(bootstrapServer);
+        producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        ProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(producerProps);
         KafkaTemplate<String, String> kafkaTemplate = new KafkaTemplate<>(producerFactory);
         kafkaTemplate.setDefaultTopic(TOPIC_NAME_CMD_USER_ACCOUNT);
         return kafkaTemplate;

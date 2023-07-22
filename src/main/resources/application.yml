@@ -17,6 +17,7 @@ spring:
         brokers: localhost:9092
         consumer-properties:
           allow.auto.create.topics: false
+          key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
         producer-properties:
           key.serializer: org.apache.kafka.common.serialization.StringSerializer
       bindings:

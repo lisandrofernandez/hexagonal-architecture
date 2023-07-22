@@ -10,7 +10,8 @@ kafka-topics --bootstrap-server kafka:29092 \
 kafka-topics --bootstrap-server kafka:29092 \
   --create --if-not-exists \
   --topic fct.user-account \
-  --replication-factor 1 --partitions 3
+  --replication-factor 1 --partitions 3 \
+  --config cleanup.policy=compact
 
 echo "Successfully created the following topics:"
 kafka-topics --bootstrap-server kafka:29092 --list
