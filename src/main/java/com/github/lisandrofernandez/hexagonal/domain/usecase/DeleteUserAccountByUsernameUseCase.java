@@ -1,4 +1,4 @@
-package com.github.lisandrofernandez.hexagonal.domain.service;
+package com.github.lisandrofernandez.hexagonal.domain.usecase;
 
 import com.github.lisandrofernandez.hexagonal.common.stereotype.UseCase;
 import com.github.lisandrofernandez.hexagonal.common.util.Assert;
@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @Slf4j
 @RequiredArgsConstructor
-public class DeleteUserAccountByUsernameService implements DeleteUserAccountByUsernameHandler {
+public class DeleteUserAccountByUsernameUseCase implements DeleteUserAccountByUsernameHandler {
     private final UserAccountRepository userAccountRepository;
     private final FctUserAccountMessageProducer fctUserAccountMessageProducer;
 

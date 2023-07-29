@@ -1,4 +1,4 @@
-package com.github.lisandrofernandez.hexagonal.domain.service;
+package com.github.lisandrofernandez.hexagonal.domain.usecase;
 
 import com.github.lisandrofernandez.hexagonal.domain.DomainException;
 

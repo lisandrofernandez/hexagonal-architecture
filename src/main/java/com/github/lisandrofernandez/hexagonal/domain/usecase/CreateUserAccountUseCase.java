@@ -1,4 +1,4 @@
-package com.github.lisandrofernandez.hexagonal.domain.service;
+package com.github.lisandrofernandez.hexagonal.domain.usecase;
 
 import com.github.lisandrofernandez.hexagonal.common.UuidGenerator;
 import com.github.lisandrofernandez.hexagonal.common.stereotype.UseCase;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @Slf4j
 @RequiredArgsConstructor
-public class CreateUserAccountService implements CreateUserAccountHandler {
+public class CreateUserAccountUseCase implements CreateUserAccountHandler {
     private final UuidGenerator uuidGenerator;
     private final UserAccountRepository userAccountRepository;
     private final FctUserAccountMessageProducer fctUserAccountMessageProducer;

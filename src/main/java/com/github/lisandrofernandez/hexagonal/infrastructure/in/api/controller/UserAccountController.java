@@ -3,7 +3,7 @@ package com.github.lisandrofernandez.hexagonal.infrastructure.in.api.controller;
 import com.github.lisandrofernandez.hexagonal.domain.DomainException;
 import com.github.lisandrofernandez.hexagonal.domain.model.UserAccount;
 import com.github.lisandrofernandez.hexagonal.domain.port.in.CreateUserAccountHandler;
-import com.github.lisandrofernandez.hexagonal.domain.port.in.GetUserAccountQuery;
+import com.github.lisandrofernandez.hexagonal.domain.port.in.query.GetUserAccountQuery;
 import com.github.lisandrofernandez.hexagonal.domain.port.in.command.CreateUserAccountCommand;
 import com.github.lisandrofernandez.hexagonal.infrastructure.in.api.common.SingleApiResponse;
 import com.github.lisandrofernandez.hexagonal.infrastructure.in.api.dto.UserAccountCreationRequest;

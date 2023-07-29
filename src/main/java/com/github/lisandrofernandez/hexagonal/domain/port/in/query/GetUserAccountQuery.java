@@ -1,4 +1,4 @@
-package com.github.lisandrofernandez.hexagonal.domain.port.in;
+package com.github.lisandrofernandez.hexagonal.domain.port.in.query;
 
 import com.github.lisandrofernandez.hexagonal.domain.model.UserAccount;
 
