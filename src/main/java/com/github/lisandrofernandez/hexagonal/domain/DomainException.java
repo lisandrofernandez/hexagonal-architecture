@@ -1,9 +1,14 @@
 package com.github.lisandrofernandez.hexagonal.domain;
 
+import lombok.experimental.UtilityClass;
+
+import java.io.Serial;
 import java.util.function.Supplier;
 
 public class DomainException extends RuntimeException {
-    static final long serialVersionUID = 4340911483717084069L;
+
+    @Serial
+    private static final long serialVersionUID = 4340911483717084069L;
 
     public DomainException() {
     }
@@ -20,7 +25,9 @@ public class DomainException extends RuntimeException {
         super(cause);
     }
 
-    public static abstract class Assert {
+    @UtilityClass
+    public static class Assert {
+
         public static void isTrue(boolean expression, String message) {
             if (!expression) {
                 throw new DomainException(message);
