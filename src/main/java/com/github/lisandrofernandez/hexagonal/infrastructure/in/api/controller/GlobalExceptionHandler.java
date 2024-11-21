@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         String message;
 
         if (httpStatusCode.is4xxClientError()) {
-            log.warn(ex.getMessage(), ex);
+            log.info(ex.getMessage(), ex);
             message = ex.getReason();
         } else if (httpStatusCode.is5xxServerError()) {
             log.error(ex.getMessage(), ex);
