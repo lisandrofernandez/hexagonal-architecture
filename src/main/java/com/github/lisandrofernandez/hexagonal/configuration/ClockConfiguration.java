@@ -1,4 +1,4 @@
-package com.github.lisandrofernandez.hexagonal.config;
+package com.github.lisandrofernandez.hexagonal.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Clock;
 
 @Configuration
-public class HexagonalArchitectureConfig {
+public class ClockConfiguration {
 
     @Bean
     public Clock clock() {
