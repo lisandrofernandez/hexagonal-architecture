@@ -34,7 +34,7 @@ public class UserAccountController {
     private final UserAccountResponseMapper userAccountResponseMapper;
 
     @GetMapping("/{id}")
-    SingleApiResponse<UserAccountResponse> getById(@PathVariable UUID id) {
+    public SingleApiResponse<UserAccountResponse> getById(@PathVariable UUID id) {
         return getUserAccountQuery.getUserAccountById(id)
                 .map(userAccountResponseMapper::fromDomain)
                 .map(SingleApiResponse::of)
@@ -42,7 +42,7 @@ public class UserAccountController {
     }
 
     @PostMapping
-    SingleApiResponse<UserAccountResponse> create(@RequestBody UserAccountCreationRequest userAccountCreationRequest) {
+    public SingleApiResponse<UserAccountResponse> create(@RequestBody UserAccountCreationRequest userAccountCreationRequest) {
         CreateUserAccountCommand createUserAccountCommand = mapToCreateUserAccountCommand(userAccountCreationRequest);
         UserAccount userAccount;
         try {
